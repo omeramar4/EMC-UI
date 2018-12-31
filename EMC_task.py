@@ -227,6 +227,7 @@ def change_inspection():
 # Update plot after average or number of items threshold changed
 def threshold_update():
     global item_label, pass_df, edges, avg_th, num_of_items
+	flag_isolates = 0
     pass_df = average_df[average_df["Average"] <= avg_th]
     pass_df = pass_df[pass_df["Count"] >= num_of_items]
     edges = list(zip(pass_df["Node1"].tolist(), pass_df["Node2"].tolist()))
