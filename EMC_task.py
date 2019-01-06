@@ -52,6 +52,7 @@ def create_average_df_2(data_frame, num_of_users):
     return averages
 
 
+# Create sizes and colors dictionaries by degree
 def set_size_color(g):
     degrees = [k[1] for k in g.degree()]  # List of node degrees by order
     max_deg, min_deg = max(degrees), min(degrees)  # Keep max and min degrees for node coloring purpose
@@ -59,21 +60,20 @@ def set_size_color(g):
 
     # Assign node color by degree
     node_color = {k: v[1] for k, v in enumerate(g.degree())}
-    for k, v in node_color.items():
-        node_color[k] = ((node_color[k] - min_deg) * color_range) / (max_deg - min_deg)
-        node_color[k] = round(node_color[k])
-    palette = sns.color_palette(None, color_range + 1)
+    palette = sns.color_palette('bright', color_range + 1)
     pal_hex_lst = list(palette.as_hex())
     pal_hex_lst.sort()
     for k, v in node_color.items():
+        node_color[k] = round(((node_color[k] - min_deg) * color_range) / (max_deg - min_deg))
         node_color[k] = pal_hex_lst[node_color[k]]
     for n in range(len(users), 0, -1):
         node_color[n] = node_color.pop(n - 1)
     return node_size, node_color
 
 
+# Create graph with nodes and edges and add properties
 def create_graph(g, g2, plt, is_isolated, edge):
-
+    global users_with_edges
     if is_isolated == 0:
         g.add_nodes_from(users)  # Add every user as a node (vertex)
         g.add_edges_from(edge)
@@ -82,33 +82,40 @@ def create_graph(g, g2, plt, is_isolated, edge):
         g.add_nodes_from(users)
         g.add_edges_from(edge)
         isolates = list(nx.isolates(g2))  # Find isolated nodes (no edge)
+        users_with_edges = [x for x in users if x not in isolates]
         g.remove_nodes_from(isolates)
         node_size, node_color = set_size_color(g2)
 
     # Add size and color attributes to the graph
     nx.set_node_attributes(g, node_size, 'node_size')
     nx.set_node_attributes(g, node_color, 'node_color')
-    source = ColumnDataSource(pd.DataFrame.from_dict({k: v for k, v in g.nodes(data=True)},orient='index'))
+    source = ColumnDataSource(pd.DataFrame.from_dict({k: v for k, v in g.nodes(data=True)}, orient='index'))
 
     # Create a graph from the NetworkX input using nx.spring_layout
     graph = from_networkx(g, nx.spring_layout, scale=50000, center=(0, 0))
-    plt.renderers.append(graph)
 
     graph.node_renderer.data_source = source
     graph.node_renderer.glyph = Circle(size='node_size', fill_color='node_color')  # Add node sizes and colors
     graph.node_renderer.selection_glyph = Circle(fill_color="#00FF00")  # Change node color on selection
-    graph.edge_renderer.glyph = MultiLine(line_color="#cccccc", line_alpha=0.8, line_width=2)  # Edge colors
-    graph.edge_renderer.selection_glyph = MultiLine(line_color="#222222",
-                                                    line_width=5)  # Edges size and colors on select
-    plt.renderers.append(graph)  # Add properties to plot
+    graph.edge_renderer.glyph = MultiLine(line_color="#cccccc", line_alpha=1, line_width=2)  # Edge colors
+    graph.edge_renderer.selection_glyph = MultiLine(line_color="#222222", line_width=5)  # Edges size & color on select
 
     # green hover for both nodes and edges
-    graph.node_renderer.hover_glyph = Circle(size=30, fill_color='#abdda4')
-    graph.edge_renderer.hover_glyph = MultiLine(line_color='#FF0000', line_width=5)
+    graph.node_renderer.hover_glyph = Circle(fill_color='#abdda4')
+    graph.edge_renderer.hover_glyph = MultiLine(line_color='#FF0000')
 
     plt.renderers.append(graph)
 
     return graph
+
+
+# Connect nodes by thresholds
+def link_edges():
+    global pass_df, edges, item_label
+    pass_df = average_df[average_df["Average"] <= avg_th]
+    pass_df = pass_df[pass_df["Count"] >= num_of_items]
+    edges = list(zip(pass_df["Node1"].tolist(), pass_df["Node2"].tolist()))
+    item_label = pass_df["Items"].tolist()  # Keep items lists for edge hover ability
 
 
 # Open and sort data in pandas data frame
@@ -117,10 +124,9 @@ data.sort_values(['UserID', 'ItemID'], inplace=True)
 
 users = set(data['UserID'])     # list of users
 N = max(users) + 1      # for the loop
-cols = ["Node1", "Node2", "Items", "Count", "Average"]      # Columns of averages dataframe
+cols = ["Node1", "Node2", "Items", "Count", "Average"]      # Columns of averages data frame
 
 choice = 3  # 1 - use create_average_df_1 function, 2 - use create_average_df_2 function, 3 - read saved csv file
-
 if choice == 1:
     average_df = create_average_df_1(data, N, cols)
     average_df.to_pickle("averages2.csv")
@@ -132,33 +138,26 @@ else:
 
 # Global variables
 # --------------------------------------------------------------------------
-flag_labels = 0      # show/hide labels
 flag_isolates = 0    # show/hide isolated nodes
 flag_inspection = 0  # 0 - edges, 1 - nodes
-avg_th = 0           # Average difference threshold
-num_of_items = 4     # Number of common items threshold
+avg_th = 0           # Default average difference threshold
+num_of_items = 4     # Default number of common items threshold
 ax_range = 45000     # Starting axes range
 plot_width = 1500
 plot_height = 610
 size_factor = 5
 color_range = 20
 doc = curdoc()      # The page of the plot (network)
+users_with_edges = users
 graph_list = []
 G_list = []
 plot_list = []
 G = nx.Graph()      # Create graph object with networkx
 plot = figure(x_range=Range1d(-ax_range, ax_range), y_range=Range1d(-ax_range, ax_range), plot_width=plot_width,
               plot_height=plot_height, tools="reset,pan,wheel_zoom,lasso_select")
-plot.toolbar.active_scroll = "auto"
 # --------------------------------------------------------------------------
 
-# Filter by average difference and number of shared items thresholds
-# --------------------------------------------------------------------------
-pass_df = average_df[average_df["Average"] <= avg_th]
-pass_df = pass_df[pass_df["Count"] >= num_of_items]
-edges = list(zip(pass_df["Node1"].tolist(), pass_df["Node2"].tolist()))
-item_label = pass_df["Items"].tolist()  # Keep items lists for edge hover ability
-# --------------------------------------------------------------------------
+link_edges()  # Filter by average difference and number of shared items thresholds
 
 new_graph = create_graph(G, G, plot, 0, edges)      # Create default graph
 
@@ -170,7 +169,7 @@ plot_list.append(plot)
 # Buttons
 # --------------------------------------------------------------------------
 isolate_btn = Button(label="Show/Hide isolated nodes", button_type="primary")
-inspection_btn = Button(label="Change inspection policy", button_type="primary")
+inspection_btn = Button(label="Change Hover Method", button_type="primary")
 avg_th_up_btn = Button(label="Increase average threshold by 0.1", button_type="primary")
 avg_th_down_btn = Button(label="Decrease average threshold by 0.1", button_type="primary")
 noi_th_up_btn = Button(label="Increase number of items threshold by 1", button_type="primary")
@@ -220,18 +219,18 @@ def change_inspection():
         hover_node = HoverTool(tooltips=[("User ID", "@id")])
         plot_list[-1].add_tools(hover_node, TapTool())
         graph_list[-1].inspection_policy = NodesAndLinkedEdges()
-        graph_list[-1].node_renderer.data_source.data['id'] = [str(k) for k in users]
+        if flag_isolates == 0:
+            graph_list[-1].node_renderer.data_source.data['id'] = [str(k) for k in users]
+        else:
+            graph_list[-1].node_renderer.data_source.data['id'] = [str(k) for k in users_with_edges]
         plot_list[-1].renderers.append(graph_list[-1])
 
 
 # Update plot after average or number of items threshold changed
 def threshold_update():
-    global item_label, pass_df, edges, avg_th, num_of_items
-	flag_isolates = 0
-    pass_df = average_df[average_df["Average"] <= avg_th]
-    pass_df = pass_df[pass_df["Count"] >= num_of_items]
-    edges = list(zip(pass_df["Node1"].tolist(), pass_df["Node2"].tolist()))
-    item_label = pass_df["Items"].tolist()  # Keep items lists for edge hover ability
+    global item_label, pass_df, edges, avg_th, num_of_items, flag_isolates
+    flag_isolates = 0
+    link_edges()
     g_new = nx.Graph()
     plt_new = figure(x_range=Range1d(-ax_range, ax_range), y_range=Range1d(-ax_range, ax_range), plot_width=plot_width,
                      plot_height=plot_height, tools="reset,pan,wheel_zoom,lasso_select")
@@ -256,7 +255,7 @@ def avg_threshold_up():
 
 # Decrease average difference threshold by 0.1
 def avg_threshold_down():
-    global item_label, pass_df, edges, avg_th
+    global avg_th
     if avg_th == 0:
         return
     avg_th -= 0.1
@@ -265,8 +264,8 @@ def avg_threshold_down():
 
 # Increase number of items threshold by 1
 def noi_threshold_up():
-    global item_label, pass_df, edges, avg_th, num_of_items
-    if avg_th == 10:
+    global num_of_items
+    if num_of_items == 10:
         return
     num_of_items += 1
     threshold_update()
@@ -274,8 +273,8 @@ def noi_threshold_up():
 
 # Decrease number of items threshold by 1
 def noi_threshold_down():
-    global item_label, pass_df, edges, avg_th, num_of_items
-    if avg_th == 1:
+    global num_of_items
+    if num_of_items == 1:
         return
     num_of_items -= 1
     threshold_update()
@@ -295,6 +294,6 @@ noi_th_down_btn.on_click(noi_threshold_down)
 change_inspection()  # Default inspection policy
 
 # The web page
-doc.title = 'EMC-Dashboard'
+doc.title = 'dellEMC-Dashboard'
 doc.add_root(column(layout, row(isolate_btn, inspection_btn, column(avg_th_up_btn, avg_th_down_btn),
                                 column(noi_th_up_btn, noi_th_down_btn))))
