@@ -19,10 +19,10 @@
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.25" value="1" />
           <entry key="project.open.time.3" value="2" />
-          <entry key="project.open.time.5" value="4" />
+          <entry key="project.open.time.5" value="5" />
           <entry key="project.open.time.6" value="2" />
           <entry key="project.open.time.8" value="1" />
-          <entry key="project.opened" value="11" />
+          <entry key="project.opened" value="12" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -38,12 +38,12 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="63" />
-          <entry key="py" value="21614" />
+          <entry key="py" value="21713" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="21677" />
+          <entry key="Python" value="21776" />
         </counts>
       </usages-collector>
     </session>
@@ -53,23 +53,15 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/EMC_task.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="295" column="14" lean-forward="true" selection-start-line="295" selection-start-column="14" selection-end-line="295" selection-end-column="14" />
+            <state relative-caret-position="378">
+              <caret line="105" lean-forward="true" selection-start-line="105" selection-end-line="105" />
               <folding>
                 <element signature="e#1#20#0" expanded="true" />
                 <element signature="e#474#1475#0" />
                 <element signature="e#1578#2322#0" />
-                <element signature="e#2352#3132#0" />
-                <element signature="e#3189#4721#0" />
-                <element signature="e#4852#5161#0" />
-                <element signature="e#8136#8806#0" />
-                <element signature="e#8617#9512#0" />
-                <element signature="e#9817#10664#0" />
-                <element signature="e#10742#10831#0" />
-                <element signature="e#10911#11028#0" />
-                <element signature="e#11101#11237#0" />
-                <element signature="e#11312#11447#0" />
-                <marker date="1546798558149" expanded="true" signature="9812:9815" ph="..." />
+                <element signature="e#2401#3185#0" />
+                <element signature="e#4986#5295#0" />
+                <marker date="1546855306438" expanded="true" signature="9826:9829" ph="..." />
               </folding>
             </state>
           </provider>
@@ -112,7 +104,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="655" />
     <option name="y" value="5" />
     <option name="width" value="3195" />
@@ -124,6 +116,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -149,7 +142,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -317,8 +309,8 @@
     <frame x="-6" y="-6" width="1549" height="837" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.48101267" visible="true" weight="0.24966975" />
-      <window_info id="Structure" order="1" sideWeight="0.51898736" side_tool="true" visible="true" weight="0.24966975" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.47890297" visible="true" weight="0.24966975" />
+      <window_info id="Structure" order="1" sideWeight="0.52109706" side_tool="true" visible="true" weight="0.24966975" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -452,23 +444,15 @@
     <entry file="file://$PROJECT_DIR$/SoFar2.py" />
     <entry file="file://$PROJECT_DIR$/EMC_task.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="295" column="14" lean-forward="true" selection-start-line="295" selection-start-column="14" selection-end-line="295" selection-end-column="14" />
+        <state relative-caret-position="378">
+          <caret line="105" lean-forward="true" selection-start-line="105" selection-end-line="105" />
           <folding>
             <element signature="e#1#20#0" expanded="true" />
             <element signature="e#474#1475#0" />
             <element signature="e#1578#2322#0" />
-            <element signature="e#2352#3132#0" />
-            <element signature="e#3189#4721#0" />
-            <element signature="e#4852#5161#0" />
-            <element signature="e#8136#8806#0" />
-            <element signature="e#8617#9512#0" />
-            <element signature="e#9817#10664#0" />
-            <element signature="e#10742#10831#0" />
-            <element signature="e#10911#11028#0" />
-            <element signature="e#11101#11237#0" />
-            <element signature="e#11312#11447#0" />
-            <marker date="1546798558149" expanded="true" signature="9812:9815" ph="..." />
+            <element signature="e#2401#3185#0" />
+            <element signature="e#4986#5295#0" />
+            <marker date="1546855306438" expanded="true" signature="9826:9829" ph="..." />
           </folding>
         </state>
       </provider>

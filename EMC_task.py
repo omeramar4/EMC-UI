@@ -102,7 +102,7 @@ def create_graph(g, g2, plt, is_isolated, edge):
 
     # green hover for both nodes and edges
     graph.node_renderer.hover_glyph = Circle(fill_color='#abdda4')
-    graph.edge_renderer.hover_glyph = MultiLine(line_color='#FF0000')
+    graph.edge_renderer.hover_glyph = MultiLine(line_color='#FF0000', line_width=3)
 
     plt.renderers.append(graph)
 
